@@ -83,6 +83,23 @@ impl<ExecT, QueryT> Wasm<ExecT, QueryT> for MyWasmKeeper {
     fn dump_wasm_raw(&self, _storage: &dyn Storage, _address: &Addr) -> Vec<Record> {
         WASM_RAW.clone()
     }
+
+    fn use_contract<
+        F: FnOnce(
+            cosmwasm_std::DepsMut<QueryT>,
+            cosmwasm_std::Env,
+        ) -> AnyResult<cosmwasm_std::Response<ExecT>>,
+    >(
+        &self,
+        _api: &dyn Api,
+        _storage: &mut dyn Storage,
+        _router: &dyn CosmosRouter<ExecC = ExecT, QueryC = QueryT>,
+        _block: &BlockInfo,
+        _contract_addr: Addr,
+        _action: F,
+    ) -> AnyResult<AppResponse> {
+        bail!("use_contract not implemented")
+    }
 }
 
 #[test]

@@ -167,6 +167,17 @@ pub trait Wasm<ExecC, QueryC> {
         let storage = PrefixedStorage::multilevel(storage, &[NAMESPACE_WASM, &namespace]);
         Box::new(storage)
     }
+
+    /// Use contract
+    fn use_contract<F: FnOnce(DepsMut<QueryC>, Env) -> AnyResult<Response<ExecC>>>(
+        &self,
+        api: &dyn Api,
+        storage: &mut dyn Storage,
+        router: &dyn CosmosRouter<ExecC = ExecC, QueryC = QueryC>,
+        block: &BlockInfo,
+        contract_addr: Addr,
+        action: F,
+    ) -> AnyResult<AppResponse>;
 }
 
 /// A structure representing a default wasm keeper.
@@ -335,6 +346,33 @@ where
     fn dump_wasm_raw(&self, storage: &dyn Storage, address: &Addr) -> Vec<Record> {
         let storage = self.contract_storage(storage, address);
         storage.range(None, None, Order::Ascending).collect()
+    }
+
+    fn use_contract<F: FnOnce(DepsMut<QueryC>, Env) -> AnyResult<Response<ExecC>>>(
+        &self,
+        api: &dyn Api,
+        storage: &mut dyn Storage,
+        router: &dyn CosmosRouter<ExecC = ExecC, QueryC = QueryC>,
+        block: &BlockInfo,
+        contract_addr: Addr,
+        action: F,
+    ) -> AnyResult<AppResponse> {
+        let res = Self::verify_response(self.with_storage(
+            api,
+            storage,
+            router,
+            block,
+            contract_addr.clone(),
+            |_, deps, env| action(deps, env),
+        )?)?;
+
+        let custom_event = Event::new("use_contract").add_attribute(CONTRACT_ATTR, &contract_addr);
+
+        let (res, msgs) = self.build_app_response(&contract_addr, custom_event, res);
+        let mut res =
+            self.process_response(api, router, storage, block, contract_addr, res, msgs)?;
+        res.data = execute_response(res.data);
+        Ok(res)
     }
 }
 

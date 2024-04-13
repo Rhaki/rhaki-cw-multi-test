@@ -16,8 +16,8 @@ use crate::{AppBuilder, GovFailingModule, IbcFailingModule};
 use cosmwasm_std::testing::{MockApi, MockStorage};
 use cosmwasm_std::{
     from_json, to_json_binary, Addr, Api, Binary, BlockInfo, ContractResult, CosmosMsg, CustomMsg,
-    CustomQuery, Empty, Querier, QuerierResult, QuerierWrapper, QueryRequest, Record, Storage,
-    SystemError, SystemResult,
+    CustomQuery, DepsMut, Empty, Env, Querier, QuerierResult, QuerierWrapper, QueryRequest, Record,
+    Response, Storage, SystemError, SystemResult,
 };
 use serde::{de::DeserializeOwned, Serialize};
 use std::fmt::Debug;
@@ -456,6 +456,33 @@ where
             msgs.into_iter()
                 .map(|msg| router.execute(&*api, write_cache, block, sender.clone(), msg))
                 .collect()
+        })
+    }
+
+    /// Asd
+    pub fn use_contract<
+        F: FnOnce(DepsMut<CustomT::QueryT>, Env) -> AnyResult<Response<CustomT::ExecT>>,
+    >(
+        &mut self,
+        contract_addr: &Addr,
+        action: F,
+    ) -> AnyResult<AppResponse> {
+        let Self {
+            api,
+            storage,
+            block,
+            router,
+        } = self;
+
+        transactional(&mut *storage, |write_cache, _| {
+            router.wasm.use_contract(
+                &*api,
+                write_cache,
+                router,
+                block,
+                contract_addr.clone(),
+                action,
+            )
         })
     }
 
