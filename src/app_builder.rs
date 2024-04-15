@@ -44,17 +44,28 @@ pub type BasicAppBuilder<ExecC, QueryC> = AppBuilder<
 /// Utility to build [App] in stages.
 /// When particular properties are not explicitly set, then default values are used.
 pub struct AppBuilder<Bank, Api, Storage, Custom, Wasm, Staking, Distr, Ibc, Gov, Stargate> {
-    api: Api,
-    block: BlockInfo,
-    storage: Storage,
-    bank: Bank,
-    wasm: Wasm,
-    custom: Custom,
-    staking: Staking,
-    distribution: Distr,
-    ibc: Ibc,
-    gov: Gov,
-    stargate: Stargate,
+    /// api
+    pub api: Api,
+    /// api
+    pub block: BlockInfo,
+    /// api
+    pub storage: Storage,
+    /// api
+    pub bank: Bank,
+    /// api
+    pub wasm: Wasm,
+    /// api
+    pub custom: Custom,
+    /// api
+    pub staking: Staking,
+    /// api
+    pub distribution: Distr,
+    /// api
+    pub ibc: Ibc,
+    /// api
+    pub gov: Gov,
+    /// api
+    pub stargate: Stargate,
 }
 
 impl Default

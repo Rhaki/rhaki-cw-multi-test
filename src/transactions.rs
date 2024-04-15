@@ -11,6 +11,7 @@ use std::ops::{Bound, RangeBounds};
 /// This is internal as it can change any time if the map implementation is swapped out.
 type BTreeMapPairRef<'a, T = Vec<u8>> = (&'a Vec<u8>, &'a T);
 
+/// transactional
 pub fn transactional<F, T>(base: &mut dyn Storage, action: F) -> AnyResult<T>
 where
     F: FnOnce(&mut dyn Storage, &dyn Storage) -> AnyResult<T>,

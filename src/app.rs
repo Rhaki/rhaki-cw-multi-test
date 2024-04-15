@@ -486,6 +486,25 @@ where
         })
     }
 
+    /// Use ibc
+    pub fn use_parts(
+        &mut self,
+    ) -> (
+        &mut ApiT,
+        &mut StorageT,
+        &mut BlockInfo,
+        &mut Router<BankT, CustomT, WasmT, StakingT, DistrT, IbcT, GovT, StargateT>,
+    ) {
+        let Self {
+            api,
+            storage,
+            block,
+            router,
+        } = self;
+
+        (api, storage, block, router)
+    }
+
     /// Call a smart contract in "sudo" mode.
     /// This will create a cache before the execution, so no state changes are persisted if this
     /// returns an error, but all are persisted on success.
