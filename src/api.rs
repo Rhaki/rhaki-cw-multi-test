@@ -22,6 +22,10 @@ impl<T: bech32::Checksum> MockApiBech<T> {
             _phantom_data: std::marker::PhantomData,
         }
     }
+
+    pub fn prefix(&self) -> &str {
+        self.prefix
+    }
 }
 
 impl<T: bech32::Checksum> Api for MockApiBech<T> {
