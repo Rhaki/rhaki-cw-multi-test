@@ -165,4 +165,4 @@ pub use crate::staking::{
 };
 pub use crate::stargate::{Stargate, StargateAcceptingModule, StargateFailingModule};
 pub use crate::wasm::{ContractData, Wasm, WasmKeeper, WasmSudo};
-pub use transactions::transactional;
+pub use transactions::{transactional, StorageTransaction};

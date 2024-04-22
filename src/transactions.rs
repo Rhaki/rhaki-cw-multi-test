@@ -22,6 +22,7 @@ where
     Ok(res)
 }
 
+/// StorageTransaction is a wrapper around a Storage that allows cache before commit
 pub struct StorageTransaction<'a> {
     /// read-only access to backing storage
     storage: &'a dyn Storage,
@@ -32,6 +33,7 @@ pub struct StorageTransaction<'a> {
 }
 
 impl<'a> StorageTransaction<'a> {
+    /// Create a new StoratgeTransaction
     pub fn new(storage: &'a dyn Storage) -> Self {
         StorageTransaction {
             storage,
